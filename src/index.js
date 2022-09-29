@@ -20,6 +20,7 @@ function Square(props) {
 }
 
 class Board extends React.Component {
+/*   
   // Constructor is helplfull to initialize the state
   constructor(props){
     // In Js calling the father super() is always neccesary
@@ -29,24 +30,7 @@ class Board extends React.Component {
       xIsNext: true,
     };
   }
-
-  handleClick(i){
-    /* 
-    Remmember that state follows SOLID principles. It is not mutated directly
-    This is useful in React because:
-      Not mutating the state directly allows us to store previous states and go back ot them
-      Detecting changes is easier using const
-    */ 
-    const squares = this.state.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      squares: squares,
-      xIsNext: !this.state.xIsNext,
-    })
-  }
+ */
 
   renderSquare(i) {
     /*
@@ -56,28 +40,19 @@ class Board extends React.Component {
     */
     return (
       <Square
-        value={this.state.squares[i]}
+        value={this.props.squares[i]}
         // In React it's conventional to use onEvent for properties that represent events.
         // And handleEvent for methods that which handle such events
         // Remmember that without the arrow the function is called
         // in every render instead of passed to the child
-        onClick={() => {this.handleClick(i)}}
+        onClick={() => {this.props.onClick(i)}}
       />
     );
   }
 
   render() {
-    const winner = calculateWinner(this.state.squares);
-    let status;
-    if (winner) {
-      status = 'Winner ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-
     return (
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -99,14 +74,59 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      history: [{
+        squares: Array(9).fill(null),
+      }],
+      xIsNext: true,
+    }
+  }
+
+  handleClick(i){
+    /* 
+    Remmember that state follows SOLID principles. It is not mutated directly
+    This is useful in React because:
+      Not mutating the state directly allows us to store previous states and go back ot them
+      Detecting changes is easier using const
+    */ 
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      // Unlike the push() method, the concat() method doesn't mutate the original Array. Userful for SOLID
+      history: history.concat([{
+        squares: squares,
+      }]),
+      xIsNext: !this.state.xIsNext,
+    })
+  }
+
   render() {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares)
+    let status;
+    if (winner) {
+      status = 'Winner ' + winner;
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
     return (
       <div className="game">
         <div className="game-board">
-          <Board />
+          <Board
+            squares = {current.squares}
+            onClick = {(i) => this.handleClick(i)}
+          />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>
+          <div>{status}</div>
           <ol>{/* TODO */}</ol>
         </div>
       </div>
