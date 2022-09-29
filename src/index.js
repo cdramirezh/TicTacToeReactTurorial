@@ -2,31 +2,61 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
-class Square extends React.Component {
-  // Constructor is helplfull to initialize the state
-  constructor(props) {
-    // In Js calling the father super() is always neccesary
-    super(props);
-    this.state = {
-      value: null,
-    };
-  }
-
-  render() {
-    return (
-      <button 
-        className="square"
-        onClick={() => this.setState({value: 'X'})}
-      >
-        {this.state.value}
-      </button>
-    );
-  }
+// Since the squares are CONTROLLED COMPONENTS, controlled by the board,
+// then we can make them simple. Define the Square as a funciton
+function Square(props) {
+  return (
+    <button 
+      className="square"
+      // Passing an anonymous or arrow functions in neccessary.
+      // Otherwise, the onClick will fire every time the component is rendered
+      // onClick={() => {this.props.onClick()}}
+      // When I'm inside a function Component instead of a regular Component, then I don't need the arrow. Weird, huh
+      onClick={props.onClick}
+    >
+      {props.value}
+    </button>
+  );
 }
 
 class Board extends React.Component {
+  // Constructor is helplfull to initialize the state
+  constructor(props){
+    // In Js calling the father super() is always neccesary
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+    };
+  }
+
+  handleClick(i){
+    /* 
+    Remmember that state follows SOLID principles. It is not mutated directly
+    This is useful in React because:
+      Not mutating the state directly allows us to store previous states and go back ot them
+      Detecting changes is easier using const
+    */ 
+    const squares = this.state.squares.slice();
+    squares[i] = 'X';
+    this.setState({squares: squares})
+  }
+
   renderSquare(i) {
-    return <Square value={i}/>;
+    /*
+    If a parethesis ater a multiple line return is not added,
+    then JS will insert a semicolon after the return and break the code.
+    It'll return nothing
+    */
+    return (
+      <Square
+        value={this.state.squares[i]}
+        // In React it's conventional to use onEvent for properties that represent events.
+        // And handleEvent for methods that which handle such events
+        // Remmember that without the arrow the function is called
+        // in every render instead of passed to the child
+        onClick={() => {this.handleClick(i)}}
+      />
+    );
   }
 
   render() {
