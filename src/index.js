@@ -79,6 +79,7 @@ class Game extends React.Component {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        location: Array(2).fill(null),
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -101,10 +102,16 @@ class Game extends React.Component {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+
+    const column = i % 3;
+    const row = Math.floor(i / 3);
+    const location = [column,row]
+
     this.setState({
       // Unlike the push() method, the concat() method doesn't mutate the original Array. Userful for SOLID
       history: history.concat([{
         squares: squares,
+        location: location,
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -112,7 +119,6 @@ class Game extends React.Component {
   }
 
   jumpTo(step) {
-    // History is not updated. React will only update the mentioned properties
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
@@ -127,7 +133,8 @@ class Game extends React.Component {
     // Step refers to the current history element
     // move refers to the current history element index
     const moves = history.map((step, move) => {
-      const description = move ? 'Go to move #' + move : 'Go to game start';
+      const location_display = '(' + step.location[0] + ',' + step.location[1] + ')'
+      const description = move ? 'Go to move #' + move + ' ' + location_display: 'Go to game start';
       return (
         /* 
         When rendering a <li/> React uses 'key' to differentiate which list elements have been changed
