@@ -135,6 +135,7 @@ class Game extends React.Component {
     const moves = history.map((step, move) => {
       const location_display = '(' + step.location[0] + ',' + step.location[1] + ')'
       const description = move ? 'Go to move #' + move + ' ' + location_display: 'Go to game start';
+      const bold = this.state.stepNumber == move;
       return (
         /* 
         When rendering a <li/> React uses 'key' to differentiate which list elements have been changed
@@ -143,7 +144,11 @@ class Game extends React.Component {
         Here it's okay to use it because we're not reordering the Array
          */
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{description}</button>
+          <button onClick={() => this.jumpTo(move)}>
+            {/* This is a way to do conditional rendering for simple elements */}
+            {bold && <b>{description}</b>}
+            {!bold && description}
+          </button>
         </li>
       );
     })
