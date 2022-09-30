@@ -46,6 +46,7 @@ class Board extends React.Component {
         // Remmember that without the arrow the function is called
         // in every render instead of passed to the child
         onClick={() => {this.props.onClick(i)}}
+        key={i}
       />
     );
   }
@@ -53,21 +54,13 @@ class Board extends React.Component {
   render() {
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {Array(3).fill(null).map( (row, i) => (
+          <div className="board-row" key={i}>
+            {Array(3).fill(null).map( (e, j) => (
+                this.renderSquare(3*i+j)
+            ))}
+          </div>
+        ))}
       </div>
     );
   }
