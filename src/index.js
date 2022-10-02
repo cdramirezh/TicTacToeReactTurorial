@@ -214,14 +214,14 @@ function calculateWinner(squares) {
       ]);
     }
   }
-  // There's no winner yet
+  // There's no winner yet. It could be a draw
   let draw = true;
   for (let j=0; j<squares.length; j++) {
     // If there's at least one empty squere, there's no draw yet
     if (!squares[j]){
-      draw = false;
+      return [null,winnerRow];
     }
   }
-  if (draw) {return ['draw',winnerRow];}
-  return [null,winnerRow];
+  return ['draw',winnerRow];
+  
 }
