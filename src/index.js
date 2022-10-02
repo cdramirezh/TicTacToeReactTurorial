@@ -5,9 +5,10 @@ import './index.css';
 // Since the squares are CONTROLLED COMPONENTS, controlled by the board,
 // then we can make them simple. Define the Square as a funciton
 function Square(props) {
+  const className = props.highligted ? 'highlighted square' : 'square';
   return (
     <button 
-      className="square"
+      className={className}
       // Passing an anonymous or arrow functions in neccessary.
       // Otherwise, the onClick will fire every time the component is rendered
       // onClick={() => {this.props.onClick()}}
@@ -46,6 +47,7 @@ class Board extends React.Component {
         // Remmember that without the arrow the function is called
         // in every render instead of passed to the child
         onClick={() => {this.props.onClick(i)}}
+        highligted = {this.props.winnerRow.includes(i)}
         key={i}
       />
     );
@@ -92,7 +94,7 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares)[0] || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -130,7 +132,7 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares)
+    const [winner, winnerRow] = calculateWinner(current.squares);
 
     // Step refers to the current history element
     // move refers to the current history element index
@@ -169,6 +171,7 @@ class Game extends React.Component {
           <Board
             squares = {current.squares}
             onClick = {(i) => this.handleClick(i)}
+            winnerRow = {winnerRow}
           />
         </div>
         <div className="game-info">
@@ -186,6 +189,9 @@ class Game extends React.Component {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<Game />);
 
+/* 
+Returns an array with the winner and the three squares that caused the win
+*/
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -200,8 +206,11 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return ([
+        squares[a],
+        [a, b, c],
+      ]);
     }
   }
-  return null;
+  return [null,Array(3).fill(null)];
 }
