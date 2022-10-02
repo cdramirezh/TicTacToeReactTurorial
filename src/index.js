@@ -160,7 +160,7 @@ class Game extends React.Component {
 
     let status;
     if (winner) {
-      status = 'Winner ' + winner;
+      status = winner === 'draw' ? 'The result is a draw': 'Winner ' + winner;
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -212,5 +212,14 @@ function calculateWinner(squares) {
       ]);
     }
   }
+  // There's no winner yet
+  let draw = true;
+  for (let j=0; j<squares.length; j++) {
+    // If there's at least one empty squere, there's no draw yet
+    if (!squares[j]){
+      draw = false;
+    }
+  }
+  if (draw) {return ['draw',Array(3).fill(null)];}
   return [null,Array(3).fill(null)];
 }
