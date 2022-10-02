@@ -76,6 +76,7 @@ class Game extends React.Component {
       }],
       stepNumber: 0,
       xIsNext: true,
+      ascendingHistory: true,
     }
   }
 
@@ -118,6 +119,14 @@ class Game extends React.Component {
     })
   }
 
+  handleClickToggle(){
+    const ascendingHistory = this.state.ascendingHistory;
+    this.setState({
+      ...this.state,
+      ascendingHistory: !ascendingHistory,
+    })
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -145,6 +154,7 @@ class Game extends React.Component {
         </li>
       );
     })
+    if (!this.state.ascendingHistory){moves.reverse();}
 
     let status;
     if (winner) {
@@ -152,6 +162,7 @@ class Game extends React.Component {
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
+    const historyToggleMessage = this.state.ascendingHistory ? 'Sort history in descending order' : 'Sort history in ascending order'
     return (
       <div className="game">
         <div className="game-board">
@@ -162,6 +173,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          <button onClick={() => this.handleClickToggle()}>{historyToggleMessage}</button>
           <ol>{moves}</ol>
         </div>
       </div>
