@@ -139,7 +139,7 @@ class Game extends React.Component {
     const moves = history.map((step, move) => {
       const location_display = '(' + step.location[0] + ',' + step.location[1] + ')'
       const description = move ? 'Go to move #' + move + ' ' + location_display: 'Go to game start';
-      const bold = this.state.stepNumber == move;
+      const bold = this.state.stepNumber === move;
       return (
         /* 
         When rendering a <li/> React uses 'key' to differentiate which list elements have been changed
@@ -203,12 +203,14 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
+  let winnerRow = Array(3).fill(null);
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      winnerRow = [a, b, c];
       return ([
         squares[a],
-        [a, b, c],
+        winnerRow,
       ]);
     }
   }
@@ -220,6 +222,6 @@ function calculateWinner(squares) {
       draw = false;
     }
   }
-  if (draw) {return ['draw',Array(3).fill(null)];}
-  return [null,Array(3).fill(null)];
+  if (draw) {return ['draw',winnerRow];}
+  return [null,winnerRow];
 }
