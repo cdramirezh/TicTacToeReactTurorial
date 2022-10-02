@@ -1,3 +1,6 @@
+# TicTacToe
+This project is a TicTacToe game from the [React TicTacToe Tutorial](https://reactjs.org/tutorial/tutorial.html#picking-a-key)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
